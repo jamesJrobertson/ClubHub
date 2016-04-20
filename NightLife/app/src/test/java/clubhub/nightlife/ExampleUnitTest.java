@@ -1,4 +1,4 @@
-package clubhub.clubhubapp;
+package clubhub.nightlife;
 
 import org.junit.Test;
 

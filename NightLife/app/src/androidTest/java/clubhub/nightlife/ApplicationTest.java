@@ -1,4 +1,4 @@
-package clubhub.clubhubapp;
+package clubhub.nightlife;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
