@@ -14,28 +14,36 @@ import android.widget.TextView;
  *
  */
 public class ClubPage extends AppCompatActivity {
-    private static RatingBar r_Bar;
-    String temp;
+
+
+    // Used as a temp to set texts of views
+    private String temp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_club_page);
-        listenerForRatingBar();
 
+        listenerForRatingBar(); // Acts on the changes of the rating bar
 
         //TODO load data from server database
 
+        // Acquire the parameters (clubs ID)
         Intent intent = getIntent();
         int id = intent.getExtras().getInt("ClubID");
+
+        // Change the clubs name place holder to the one associated with the ID
         TextView v = (TextView)findViewById(R.id.textClubsName);
         String clubName = String.valueOf(id); // TODO need to get the name from the database according to id#
         v.setText(clubName);
+        // Formatting
         v.setTextSize(50);
 
-        r_Bar = (RatingBar) findViewById(R.id.ratingBar);
+        // Set the rating to the average rating of the club
+        RatingBar r_Bar = (RatingBar) findViewById(R.id.ratingBar);
         int ratingProgress = 4; // 1 = half a star // TODO get average rating from database and set ratingProgress to it
         r_Bar.setProgress(ratingProgress);
 
+        // Set the Image of the club
         ImageView iv = (ImageView) findViewById(R.id.imageClubView);
         // TODO get the image the club wants displayed and set iv to it
 
@@ -56,6 +64,7 @@ public class ClubPage extends AppCompatActivity {
     }
 
     public void onClickInformation(View v){
+        // On click set the view to display information data
         TextView d = (TextView) findViewById(R.id.textDisplyBox);
         temp = "Information:\n" +
                 "Display information and such";
@@ -64,6 +73,7 @@ public class ClubPage extends AppCompatActivity {
 
     }
     public void onClickSpecials(View v){
+        // On click set the view to display specials data
         TextView d = (TextView) findViewById(R.id.textDisplyBox);
         temp = "Specials";
         d.setText(temp);
@@ -71,12 +81,14 @@ public class ClubPage extends AppCompatActivity {
     }
 
     public void onClickPromotions(View v){
+        // On click set the view to display promotions data
         TextView d = (TextView) findViewById(R.id.textDisplyBox);
         temp = "Promotions: Nothing at this time";
         d.setText(temp);
         // TODO gather and display the promotion data from the database
     }
     public void onClickGuestList(View V){
+        // On click set the view to display guest list data
         TextView d = (TextView) findViewById(R.id.textDisplyBox);
         temp = "Guest List: NA";
         d.setText(temp);
@@ -85,13 +97,13 @@ public class ClubPage extends AppCompatActivity {
     }
     public void listenerForRatingBar()
     {
-        r_Bar = (RatingBar) findViewById(R.id.ratingBar);
+        RatingBar r_Bar = (RatingBar) findViewById(R.id.ratingBar);
 
         r_Bar.setOnRatingBarChangeListener(
                 new RatingBar.OnRatingBarChangeListener(){
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating, boolean t){
-
+                        // TODO do something once the user sets the rating
                     }
                 }
         );
