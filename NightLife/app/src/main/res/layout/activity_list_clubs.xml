@@ -32,15 +32,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:text="@string/name" />
-
-                <Button
-                    android:id="@+id/button_wait_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:text="@string/wait_time" />
+                    android:text="@string/name"
+                    android:clickable="true"
+                    android:onClick="orderByName" />
 
                 <Button
                     android:id="@+id/button_busy"
@@ -48,7 +42,20 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:text="@string/busy" />
+                    android:text="@string/busy"
+                    android:clickable="true"
+                    android:onClick="orderByBusy" />
+
+                <Button
+                    android:id="@+id/button_wait_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:text="@string/wait_time"
+                    android:onClick="orderByWaitTime"
+                    android:clickable="true" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
