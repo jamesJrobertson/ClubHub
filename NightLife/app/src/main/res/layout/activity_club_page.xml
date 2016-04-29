@@ -34,33 +34,36 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Club Name Here"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:id="@+id/textClubsName" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:id="@+id/linear_layout_image_information">
 
-                <TextView
-                    android:id="@+id/textWaitTime"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Wait Time XX min" />
+                    android:id="@+id/imageViewWait"
+                    android:src="@drawable/wait_image10" />
 
-                <TextView
-                    android:id="@+id/textBusyScale"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Busy Scale" />
+                    android:id="@+id/imageViewBusy"
+                    android:src="@drawable/busy_image50" />
 
-                <TextView
-                    android:id="@+id/textCoverCharge"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Cover Charge " />
+                    android:id="@+id/imageViewCover"
+                    android:src="@drawable/cover_image10" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -73,6 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:background="@android:color/transparent"
                     android:text="Information"
                     android:onClick="onClickInformation"
@@ -83,6 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:background="@android:color/transparent"
                     android:clickable="true"
                     android:onClick="onClickSpecials"
@@ -93,6 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:background="@android:color/transparent"
                     android:text="Promotions"
                     android:clickable="true"
@@ -103,18 +109,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:background="@android:color/transparent"
                     android:text="Guest List"
                     android:clickable="true"
                     android:onClick="onClickGuestList" />
             </LinearLayout>
 
-
             <TextView
                 android:id="@+id/textDisplyBox"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="Information: "
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
             />
         </LinearLayout>

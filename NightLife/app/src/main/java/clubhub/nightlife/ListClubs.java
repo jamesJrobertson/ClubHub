@@ -1,6 +1,9 @@
 package clubhub.nightlife;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -68,6 +71,9 @@ public class ListClubs extends AppCompatActivity {
                 txt.setText(mLine);
                 txt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
                 txt.setGravity(Gravity.START);
+                // Set font of the club name
+                txt.setTextSize(30);
+                txt.setTypeface(null, Typeface.BOLD);
                 linlay2.addView(txt);
 
                 // Set the wait time
@@ -75,7 +81,7 @@ public class ListClubs extends AppCompatActivity {
                 txt2 = new TextView(this);
                 l = "Line " + mLine + " min";
                 txt2.setText(l);
-                txt2.setGravity(Gravity.END);
+                txt2.setGravity(Gravity.END | Gravity.BOTTOM);
                 txt2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                 linlay2.addView(txt2);
 
@@ -109,7 +115,7 @@ public class ListClubs extends AppCompatActivity {
                 mLine = reader.readLine();
                 prog = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
                 prog.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                prog.setProgressDrawable(getResources().getDrawable(R.drawable.progress_colour));
+                prog.setProgressDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.progress_colour));
                 prog.setProgress(Integer.parseInt(mLine));
 
                 // add all to the overall layout
