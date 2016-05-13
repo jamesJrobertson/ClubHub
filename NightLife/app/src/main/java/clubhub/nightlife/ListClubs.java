@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 public class ListClubs extends AppCompatActivity {
     Vector<LinearLayout> lls = new Vector<>();
     Vector<Vector<String>> database = new Vector<Vector<String>>();
+    int orderFlag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,16 +156,49 @@ public class ListClubs extends AppCompatActivity {
 }
 
     public void orderByName(View ve) {
-        // TODO reorganize clubs by alphabetical order (may need to wait for database to be done)
-
-        // This is just dummy things to see if clicking works
+        // TODO When pressed multiple times
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
         for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
-        for (int i = (lls.size() - 1); i >= 0; i--) {
-            ll.addView(lls.elementAt(i));
+        int placeHolder[] = new int[database.size()];
+        for(int i = 0; i < placeHolder.length; i++)
+            placeHolder[i] = i;
+
+        boolean flag = true;   // set flag to true to begin first pass
+        int temp;   //holding variable
+
+        while ( flag )
+        {
+            flag= false;    //set flag to false awaiting a possible swap
+            for( int j = 0;  j < placeHolder.length -1;  j++ )
+            {
+//                a negative int if this < that
+//                0 if this == that
+//                a positive int if this > that
+//
+                if ( 0 > database.elementAt(placeHolder[j]).elementAt(1).compareToIgnoreCase(database.elementAt(placeHolder[j+1]).elementAt(1)))   // change to > for ascending sort
+                {
+                    temp = placeHolder[ j ];                //swap elements
+                    placeHolder[ j ] = placeHolder[ j+1 ];
+                    placeHolder[ j+1 ] = temp;
+                    flag = true;              //shows a swap occurred
+                }
+            }
         }
+        if(1 == orderFlag){
+            orderFlag = 2;
+            for (int i = 0; i < lls.size(); i++) {
+                ll.addView(lls.elementAt(placeHolder[i]));
+            }
+        }
+        else {
+            orderFlag = 1;
+            for (int i = (lls.size() - 1); i >= 0; i--) {
+                ll.addView(lls.elementAt(placeHolder[i]));
+            }
+        }
+
 
     }
 
@@ -177,9 +211,45 @@ public class ListClubs extends AppCompatActivity {
             ll.removeView(findViewById(i));
         }
 
-        for (int i = 0; i < lls.size(); i++) {
-            ll.addView(lls.elementAt(i));
+        int placeHolder[] = new int[database.size()];
+        for(int i = 0; i < placeHolder.length; i++)
+            placeHolder[i] = i;
+
+        boolean flag = true;   // set flag to true to begin first pass
+        int temp;   //holding variable
+
+        while ( flag )
+        {
+            flag= false;    //set flag to false awaiting a possible swap
+            for( int j = 0;  j < placeHolder.length -1;  j++ )
+            {
+//                a negative int if this < that
+//                0 if this == that
+//                a positive int if this > that
+//
+                if (Integer.parseInt(database.elementAt(placeHolder[j]).elementAt(3)) < Integer.parseInt(database.elementAt(placeHolder[j+1]).elementAt(3)))   // change to > for ascending sort
+
+                {
+                    temp = placeHolder[ j ];                //swap elements
+                    placeHolder[ j ] = placeHolder[ j+1 ];
+                    placeHolder[ j+1 ] = temp;
+                    flag = true;              //shows a swap occurred
+                }
+            }
         }
+        if(3 == orderFlag){
+            orderFlag = 4;
+            for (int i = 0; i < lls.size(); i++) {
+                ll.addView(lls.elementAt(placeHolder[i]));
+            }
+        }
+        else {
+            orderFlag = 3;
+            for (int i = (lls.size() - 1); i >= 0; i--) {
+                ll.addView(lls.elementAt(placeHolder[i]));
+            }
+        }
+
     }
 
     public void orderByWaitTime(View v) {
@@ -191,9 +261,44 @@ public class ListClubs extends AppCompatActivity {
             ll.removeView(findViewById(i));
         }
 
-        for (int i = (lls.size() - 1); i >= 0; i--) {
-            ll.addView(lls.elementAt(i));
+        int placeHolder[] = new int[database.size()];
+        for(int i = 0; i < placeHolder.length; i++)
+            placeHolder[i] = i;
+
+        boolean flag = true;   // set flag to true to begin first pass
+        int temp;   //holding variable
+
+        while ( flag )
+        {
+            flag= false;    //set flag to false awaiting a possible swap
+            for( int j = 0;  j < placeHolder.length -1;  j++ )
+            {
+//                a negative int if this < that
+//                0 if this == that
+//                a positive int if this > that
+//
+                if (Integer.parseInt(database.elementAt(placeHolder[j]).elementAt(2)) < Integer.parseInt(database.elementAt(placeHolder[j+1]).elementAt(2)))   // change to > for ascending sort
+                {
+                    temp = placeHolder[ j ];                //swap elements
+                    placeHolder[ j ] = placeHolder[ j+1 ];
+                    placeHolder[ j+1 ] = temp;
+                    flag = true;              //shows a swap occurred
+                }
+            }
         }
+        if(5 == orderFlag){
+            orderFlag = 6;
+            for (int i = 0; i < lls.size(); i++) {
+                ll.addView(lls.elementAt(placeHolder[i]));
+            }
+        }
+        else {
+            orderFlag = 5;
+            for (int i = (lls.size() - 1); i >= 0; i--) {
+                ll.addView(lls.elementAt(placeHolder[i]));
+            }
+        }
+
     }
 
     private View.OnClickListener myhandler = new View.OnClickListener() {

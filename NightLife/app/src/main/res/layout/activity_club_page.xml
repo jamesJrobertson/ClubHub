@@ -30,38 +30,38 @@
                 android:src="@drawable/test" />
 
             <TextView
+                android:id="@+id/textClubsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Club Name Here"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:id="@+id/textClubsName" />
+                android:text="Club Name Here"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <LinearLayout
+                android:id="@+id/linear_layout_image_information"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:orientation="horizontal"
-                android:id="@+id/linear_layout_image_information">
+                android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/imageViewWait"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/imageViewWait"
                     android:src="@drawable/wait_image10" />
 
                 <ImageView
+                    android:id="@+id/imageViewBusy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/imageViewBusy"
                     android:src="@drawable/busy_image50" />
 
                 <ImageView
+                    android:id="@+id/imageViewCover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/imageViewCover"
                     android:src="@drawable/cover_image10" />
 
             </LinearLayout>
@@ -76,21 +76,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:singleLine="true"
                     android:background="@android:color/transparent"
-                    android:text="Information"
+                    android:clickable="true"
                     android:onClick="onClickInformation"
-                    android:clickable="true" />
+                    android:singleLine="true"
+                    android:text="Information" />
 
                 <Button
                     android:id="@+id/button_Specials"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:singleLine="true"
                     android:background="@android:color/transparent"
                     android:clickable="true"
                     android:onClick="onClickSpecials"
+                    android:singleLine="true"
                     android:text="Specials" />
 
                 <Button
@@ -98,31 +98,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:singleLine="true"
                     android:background="@android:color/transparent"
-                    android:text="Promotions"
                     android:clickable="true"
-                    android:onClick="onClickPromotions" />
+                    android:onClick="onClickPromotions"
+                    android:singleLine="true"
+                    android:text="Promotions" />
 
                 <Button
                     android:id="@+id/button_Guest_List"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:singleLine="true"
                     android:background="@android:color/transparent"
-                    android:text="Guest List"
                     android:clickable="true"
-                    android:onClick="onClickGuestList" />
+                    android:onClick="onClickGuestList"
+                    android:singleLine="true"
+                    android:text="Guest List" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textDisplyBox"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="Information: "
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="Information: "
                 android:textAppearance="?android:attr/textAppearanceLarge" />
             />
         </LinearLayout>
