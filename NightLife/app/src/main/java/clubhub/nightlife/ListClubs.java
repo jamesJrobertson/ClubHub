@@ -19,19 +19,51 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
+import com.google.gdata.client.authn.oauth.*;
+import com.google.gdata.client.spreadsheet.*;
+import com.google.gdata.data.*;
+import com.google.gdata.data.batch.*;
+import com.google.gdata.data.spreadsheet.*;
+import com.google.gdata.util.*;
+
+import java.io.IOException;
+import java.net.*;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class ListClubs extends AppCompatActivity {
     Vector<LinearLayout> lls = new Vector<>();
+    Vector<Vector<String>> database = new Vector<Vector<String>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_clubs);
-        //TODO Load data from server database
 
-        //
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linear_layout1); // The layout everything on ListClub goes into
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.relative_layout_listclub);
+        // Get the database
+        ListFeed worksheets = null;
+        try {
+            worksheets = new GetDataAsyncTask().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // Fill database from google sheets
+        for (ListEntry row : worksheets.getEntries()) {
+            Vector<String> data = new Vector<String>();
+            for (String tag : row.getCustomElements().getTags()) {
+                if(row.getCustomElements().getValue(tag) == null)
+                    data.add("NA"); // Checking to see if the cell has something in it
+                else
+                    data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+            }
+            database.add(data); // Add the clubs information to the data list
+        }
+
+        LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1); // The layout everything on ListClub goes into
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_layout_listclub);
 
         // Set the overall background colour
         // TODO get a drawable or image as the background, single colour is boring
@@ -44,141 +76,122 @@ public class ListClubs extends AppCompatActivity {
 
         String l; // Used as a temp to set texts of views
 
-        // For now am reading in the data from a .txt file eventually we will remove this and read from a database
-        BufferedReader reader = null;
-        int id = 0; // unique id for each club layout
-        try {
-            reader = new BufferedReader(new InputStreamReader(getAssets().open("ClubsDatabase")));
-            String mLine; // line read in
+        for (int i = 0; i < database.size(); i++) {
 
-            while ((mLine = reader.readLine()) != null) {
+            // The overall layout for one club
+            linlay = new LinearLayout(this);
+            linlay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            linlay.setGravity(Gravity.CENTER);
+            linlay.setClickable(true);
+            linlay.setOnClickListener(myhandler);
+            linlay.setOrientation(LinearLayout.VERTICAL);
 
-                // The overall layout for one club
-                linlay = new LinearLayout(this);
-                linlay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                linlay.setGravity(Gravity.CENTER);
-                linlay.setClickable(true);
-                linlay.setOnClickListener(myhandler);
-                linlay.setOrientation(LinearLayout.VERTICAL);
+            // The layout for the name and wait time to go in
+            linlay2 = new LinearLayout(this);
+            linlay2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            linlay2.setOrientation(LinearLayout.HORIZONTAL);
 
-                // The layout for the name and wait time to go in
-                linlay2 = new LinearLayout(this);
-                linlay2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-                linlay2.setOrientation(LinearLayout.HORIZONTAL);
+            // Set the name of the club
+            txt = new TextView(this);
+            txt.setText(database.elementAt(i).elementAt(1));
+            txt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            txt.setGravity(Gravity.START);
+            // Set font of the club name
+            txt.setTextSize(30);
+            txt.setTypeface(null, Typeface.BOLD);
+            linlay2.addView(txt);
 
-                // Set the name of the club
-                txt = new TextView(this);
-                txt.setText(mLine);
-                txt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
-                txt.setGravity(Gravity.START);
-                // Set font of the club name
-                txt.setTextSize(30);
-                txt.setTypeface(null, Typeface.BOLD);
-                linlay2.addView(txt);
+            // Set the wait time
+            txt2 = new TextView(this);
+            l = "Wait " + database.elementAt(i).elementAt(2) + " min";
+            txt2.setText(l);
+            txt2.setGravity(Gravity.END | Gravity.BOTTOM);
+            txt2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            linlay2.addView(txt2);
 
-                // Set the wait time
-                mLine = reader.readLine();
-                txt2 = new TextView(this);
-                l = "Line " + mLine + " min";
-                txt2.setText(l);
-                txt2.setGravity(Gravity.END | Gravity.BOTTOM);
-                txt2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-                linlay2.addView(txt2);
+            // The layout for the busy scale text to go into
+            linlay3 = new LinearLayout(this);
+            linlay3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            linlay3.setOrientation(LinearLayout.HORIZONTAL);
 
-                // The layout for the busy scale text to go into
-                linlay3 = new LinearLayout(this);
-                linlay3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-                linlay3.setOrientation(LinearLayout.HORIZONTAL);
+            // Noy busy text to be added
+            l = "Not Busy";
+            txt3 = new TextView(this);
+            txt3.setText(l);
+            txt3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            linlay3.addView(txt3);
 
-                // Noy busy text to be added
-                l = "Not Busy";
-                txt3 = new TextView(this);
-                txt3.setText(l);
-                txt3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
-                linlay3.addView(txt3);
+            // Average text to be added
+            txt4 = new TextView(this);
+            l = "Average";
+            txt4.setText(l);
+            txt4.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            linlay3.addView(txt4);
 
-                // Average text to be added
-                txt4 = new TextView(this);
-                l = "Average";
-                txt4.setText(l);
-                txt4.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
-                linlay3.addView(txt4);
+            // Busy text to be added
+            txt5 = new TextView(this);
+            l = "Busy";
+            txt5.setText(l);
+            txt5.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            linlay3.addView(txt5);
 
-                // Busy text to be added
-                txt5 = new TextView(this);
-                l = "Busy";
-                txt5.setText(l);
-                txt5.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
-                linlay3.addView(txt5);
+            // Progress bar to be added
+            prog = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+            prog.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            prog.setProgressDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.progress_colour));
+            prog.setProgress(Integer.parseInt(database.elementAt(i).elementAt(3)));
 
-                // Progress bar to be added
-                mLine = reader.readLine();
-                prog = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-                prog.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                prog.setProgressDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.progress_colour));
-                prog.setProgress(Integer.parseInt(mLine));
+            // add all to the overall layout
+            linlay.addView(linlay2);
+            linlay.addView(linlay3);
+            linlay.addView(prog);
+            linlay.setId(Integer.parseInt(database.elementAt(i).elementAt(0)));
+            lls.add(linlay);
 
-                // add all to the overall layout
-                linlay.addView(linlay2);
-                linlay.addView(linlay3);
-                linlay.addView(prog);
-                linlay.setId(id);
-                lls.add(linlay);
-
-                // Increase unique id
-                id++;
-            }
-        } catch (IOException e) {
-            Log.d("TEST", "Exception thrown file not read");
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    Log.d("TEST", "Exception thrown file not read");
-                }
-            }
         }
-        for (int i = 0; i < lls.size(); i++ )
-            ll.addView(lls.elementAt(i)); // Add all views to the ListClubs page
-    }
 
-    public void orderByName(View ve){
+    for(int i = 0;i<lls.size();i++)
+            ll.addView(lls.elementAt(i)); // Add all views to the ListClubs page
+}
+
+    public void orderByName(View ve) {
         // TODO reorganize clubs by alphabetical order (may need to wait for database to be done)
 
         // This is just dummy things to see if clicking works
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linear_layout1);
-        for (int i = (lls.size()-1); i >= 0; i-- ) {
+        LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
+        for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
-        for (int i = (lls.size()-1); i >= 0; i-- ) {
+        for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.addView(lls.elementAt(i));
         }
 
     }
-    public void orderByBusy(View v){
+
+    public void orderByBusy(View v) {
         // TODO reorganize clubs by how busy they are (may need to wait for database to be done)
 
         // This is just dummy things to see if clicking works
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linear_layout1);
-        for (int i = (lls.size()-1); i >= 0; i-- ) {
+        LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
+        for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
 
-        for (int i = 0; i < lls.size(); i++ ) {
+        for (int i = 0; i < lls.size(); i++) {
             ll.addView(lls.elementAt(i));
         }
     }
-    public void orderByWaitTime(View v){
+
+    public void orderByWaitTime(View v) {
         // TODO reorganize clubs by how much wait time there is (may need to wait for database to be done)
 
         // This is just dummy things to see if clicking works
-        LinearLayout ll = (LinearLayout)findViewById(R.id.linear_layout1);
-        for (int i = (lls.size()-1); i >= 0; i-- ) {
+        LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
+        for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
 
-        for (int i = (lls.size()-1); i >= 0; i-- ) {
+        for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.addView(lls.elementAt(i));
         }
     }
@@ -188,7 +201,7 @@ public class ListClubs extends AppCompatActivity {
         public void onClick(View v) {
             int clubID = v.getId(); // The clubs id that was pressed
             Intent intent = new Intent("android.intent.action.ClubPage"); // Change to the clubs page
-            intent.putExtra("ClubID", clubID); // pass the id to the new page
+            intent.putExtra("ClubInformation", database.elementAt(clubID)); // pass the id to the new page
             startActivity(intent);
         }
     };
