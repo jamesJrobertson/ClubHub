@@ -63,21 +63,50 @@ public class ClubPage extends AppCompatActivity {
         if("NA" != data.get(4))
             Picasso.with(getApplicationContext().getApplicationContext()).load(data.get(4)).into(iv);
 
+        // Temp variable to assign images to according data values
+        Drawable drawTemp = null;
+
         //  Set image of wait time
-        // TODO Get wait time with associated image, need to read in a value and select proper image to display
+        // TODO Get better images and more precise ones, will need to redo scales accordingly
         iv = (ImageView) findViewById(R.id.imageViewWait);
-        iv.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.wait_image10));
+        int waitTime = Integer.parseInt(data.get(2));
+        if(5 > waitTime)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image0);
+        else if (5 <= waitTime && 10 > waitTime)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image5);
+        else if (10 <= waitTime && 20 > waitTime)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image10);
+        else if (20 <= waitTime)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image20);
+        iv.setImageDrawable(drawTemp);
 
         // Set image of busy scale
-        // TODO busy image according to scale, need to read in a value and select proper image to display
+        // TODO Get better images and more precise ones, will need to redo scales accordingly
         iv = (ImageView) findViewById(R.id.imageViewBusy);
-        iv.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.busy_image50));
+        int busyScale = Integer.parseInt(data.get(3));
+        if(25 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.busy_image0);
+        else if (25 <= busyScale && 75 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.busy_image50);
+        else if (75 <= busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.busy_image100);
+        iv.setImageDrawable(drawTemp);
 
         // Set cover charge image
-        // TODO cover charge with image, need to read in a value and select proper image to display
+        // TODO Get better images and more precise ones, will need to redo scales accordingly
         iv = (ImageView) findViewById(R.id.imageViewCover);
-        iv.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.cover_image10));
+        int coverCharge = Integer.parseInt(data.get(5));
+        if(10 > coverCharge)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image0);
+        else if (10 <= coverCharge && 20 > coverCharge)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image10);
+        else if (20 <= coverCharge && 30 > coverCharge)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image20);
+        else if (30 <= coverCharge)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image30);
+        iv.setImageDrawable(drawTemp);
 
+        // Get the layout of cober, busy, wait time images and change the background
         LinearLayout imageLay = (LinearLayout) findViewById(R.id.linear_layout_image_information);
         imageLay.setBackgroundColor(0xFFFF00FF);
 

@@ -33,15 +33,16 @@
                     android:numStars="5"
                     android:rating="3"
                     android:stepSize="0.5" />
-            </RelativeLayout>
 
-            <TextView
-                android:id="@+id/textClubsName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:text="Club Name Here"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                <TextView
+                    android:id="@+id/textClubsName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:layout_alignParentBottom="true"
+                    android:text="Club Name Here"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/linear_layout_image_information"
