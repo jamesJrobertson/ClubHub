@@ -3,7 +3,9 @@ package clubhub.nightlife;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,30 +43,40 @@ public class ListClubs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_clubs);
 
-        // Get the database
-        ListFeed worksheets = null;
-        try {
-            worksheets = new GetDataAsyncTask().execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
+        swipeView.setColorScheme(android.R.color.holo_blue_dark, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_green_light);
+        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeView.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeView.setRefreshing(false);
+                        initializeDatabase();
+                        initializePage();
 
-        // Fill database from google sheets
-        for (ListEntry row : worksheets.getEntries()) {
-            Vector<String> data = new Vector<String>();
-            for (String tag : row.getCustomElements().getTags()) {
-                if(row.getCustomElements().getValue(tag) == null)
-                    data.add("NA"); // Checking to see if the cell has something in it
-                else
-                    data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+                    }
+                }, 1000);
             }
-            database.add(data); // Add the clubs information to the data list
-        }
+        });
+
+        initializeDatabase();
+        initializePage();
+
+}
+    private void initializePage(){
+
+
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1); // The layout everything on ListClub goes into
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_layout_listclub);
+
+        // Reset the layout if there was previously anything in it
+        for (int i = (lls.size() - 1); i >= 0; i--) {
+            ll.removeView(findViewById(i));
+        }
+        lls.clear();
 
         // Set the overall background colour
         // TODO get a drawable or image as the background, single colour is boring
@@ -151,9 +163,10 @@ public class ListClubs extends AppCompatActivity {
 
         }
 
-    for(int i = 0;i<lls.size();i++)
+        for(int i = 0;i<lls.size();i++)
             ll.addView(lls.elementAt(i)); // Add all views to the ListClubs page
-}
+
+    }
 
     public void orderByName(View ve) {
         // TODO When pressed multiple times
@@ -253,9 +266,7 @@ public class ListClubs extends AppCompatActivity {
     }
 
     public void orderByWaitTime(View v) {
-        // TODO reorganize clubs by how much wait time there is (may need to wait for database to be done)
 
-        // This is just dummy things to see if clicking works
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
         for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
@@ -301,6 +312,32 @@ public class ListClubs extends AppCompatActivity {
 
     }
 
+    private void initializeDatabase (){
+        database.clear();
+        // Get the database
+        ListFeed worksheets = null;
+        try {
+            worksheets = new GetDataAsyncTask().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // Fill database from google sheets
+        for (ListEntry row : worksheets.getEntries()) {
+            Vector<String> data = new Vector<String>();
+            for (String tag : row.getCustomElements().getTags()) {
+                if(row.getCustomElements().getValue(tag) == null)
+                    data.add("NA"); // Checking to see if the cell has something in it
+                else
+                    data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+            }
+            database.add(data); // Add the clubs information to the data list
+        }
+
+    }
+
     private View.OnClickListener myhandler = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -310,4 +347,5 @@ public class ListClubs extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
 }
