@@ -24,6 +24,7 @@ public class MainPage extends AppCompatActivity {
 
     }
     public void onClickContacts(View v){
-
+        Intent intent = new Intent("android.intent.action.ContactUs"); // Change to list clubs page
+        startActivity(intent);
     }
 }

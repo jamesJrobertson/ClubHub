@@ -87,7 +87,7 @@ public class ClubPage extends AppCompatActivity {
         else if (73 <= busyScale)
             drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity85);
         iv.setImageDrawable(drawTemp);
-        
+
 
         // Set cover charge image
         // TODO Get better images and more precise ones, will need to redo scales accordingly
@@ -129,12 +129,12 @@ public class ClubPage extends AppCompatActivity {
         d.setText(temp);
     }
 
-    public void onClickPromotions(View v) {
-        // On click set the view to display promotions data
-        TextView d = (TextView) findViewById(R.id.textDisplyBox);
-        temp = data.get(9);
-        d.setText(temp);
-    }
+//    public void onClickPromotions(View v) {
+//        // On click set the view to display promotions data
+//        TextView d = (TextView) findViewById(R.id.textDisplyBox);
+//        temp = data.get(9);
+//        d.setText(temp);
+//    }
 
     public void onClickGuestList(View V) {
         // On click set the view to display guest list data
@@ -143,7 +143,13 @@ public class ClubPage extends AppCompatActivity {
             temp = "Show this at the door before 11:00pm to get in for free";
         else
             temp = "NA";
-        d.setText(temp);
+       // d.setText(temp);
+
+
+        Intent intent = new Intent("android.intent.action.GuestList"); // Change to the clubs page
+        intent.putExtra("GuestList", temp); // pass the id to the new page
+        startActivity(intent);
+
     }
 
     public void listenerForRatingBar() {

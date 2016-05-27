@@ -22,7 +22,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clubs"
+            android:text="Clubs List"
             android:layout_weight="1"
             android:background="@drawable/boarder2"
             android:id="@+id/button"
@@ -42,7 +42,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Events"
+            android:text="Promotions"
             android:layout_weight="1"
             android:background="@drawable/boarder2"
             android:id="@+id/button2"
@@ -62,7 +62,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Contact"
+            android:text="Contact us"
             android:layout_weight="1"
             android:background="@drawable/boarder2"
             android:id="@+id/button3"
