@@ -21,8 +21,6 @@ import java.util.ArrayList;
  * Created by James R on 2016-04-20.
  */
 public class ClubPage extends AppCompatActivity {
-
-
     // Used as a temp to set texts of views
     private String temp;
     ArrayList<String> data;
@@ -38,7 +36,7 @@ public class ClubPage extends AppCompatActivity {
         Intent intent = getIntent();
         data = intent.getExtras().getStringArrayList("ClubInformation");
 
-        // Set the clubs name uder the photo
+        // Set the clubs name on photo
         TextView v = (TextView) findViewById(R.id.textClubsName);
         v.setText(data.get(1)); // Get the clubs name
         // Formatting of the clubs name
@@ -51,61 +49,41 @@ public class ClubPage extends AppCompatActivity {
 
         // Set the Image of the club from the url in the database
         ImageView iv = (ImageView) findViewById(R.id.imageClubView);
-        if("NA" != data.get(4))
+        if ("NA" != data.get(4))
             Picasso.with(getApplicationContext().getApplicationContext()).load(data.get(4)).into(iv);
 
         // Temp variable to assign images to according data values
         Drawable drawTemp = null;
 
         //  Set image of wait time
-        // TODO Get better images and more precise ones, will need to redo scales accordingly
-        iv = (ImageView) findViewById(R.id.imageViewWait);
-        int waitTime = Integer.parseInt(data.get(2));
-        if(5 > waitTime)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image0);
-        else if (5 <= waitTime && 10 > waitTime)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image5);
-        else if (10 <= waitTime && 20 > waitTime)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image10);
-        else if (20 <= waitTime)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.wait_image20);
-        iv.setImageDrawable(drawTemp);
+        TextView waitTimeText = (TextView) findViewById(R.id.textViewWaitTime);
+        waitTimeText.setText(data.get(2));
 
-        // Set image of busy scale
+        // Set image of capacity scale
         iv = (ImageView) findViewById(R.id.imageViewBusy);
         int busyScale = Integer.parseInt(data.get(3));
-        if(15 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity10);
+        if (15 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity10);
         else if (15 <= busyScale && 27 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity20);
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity20);
         else if (27 <= busyScale && 40 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity35);
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity35);
         else if (40 <= busyScale && 53 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity45);
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity45);
         else if (53 <= busyScale && 73 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity60);
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity60);
         else if (73 <= busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity85);
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity85);
         iv.setImageDrawable(drawTemp);
 
 
-        // Set cover charge image
-        // TODO Get better images and more precise ones, will need to redo scales accordingly
-        iv = (ImageView) findViewById(R.id.imageViewCover);
-        int coverCharge = Integer.parseInt(data.get(5));
-        if(10 > coverCharge)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image0);
-        else if (10 <= coverCharge && 20 > coverCharge)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image10);
-        else if (20 <= coverCharge && 30 > coverCharge)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image20);
-        else if (30 <= coverCharge)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cover_image30);
-        iv.setImageDrawable(drawTemp);
+        // Set cover charge
+        TextView coverText = (TextView) findViewById(R.id.textViewCover);
+        waitTimeText.setText("$" + data.get(5));
 
         // Get the layout of cober, busy, wait time images and change the background
         LinearLayout imageLay = (LinearLayout) findViewById(R.id.linear_layout_image_information);
-        imageLay.setBackgroundColor(0xFFFF00FF);
+        //imageLay.setBackgroundColor(0xFFFF00FF);
 
         // Set the starting information to be displayed (What onCLickInformation does)
         setClubInformation();
@@ -143,7 +121,7 @@ public class ClubPage extends AppCompatActivity {
             temp = "Show this at the door before 11:00pm to get in for free";
         else
             temp = "NA";
-       // d.setText(temp);
+        // d.setText(temp);
 
 
         Intent intent = new Intent("android.intent.action.GuestList"); // Change to the clubs page
