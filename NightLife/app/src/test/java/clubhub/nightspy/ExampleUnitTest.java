@@ -1,4 +1,4 @@
-package clubhub.nightlife;
+package clubhub.nightspy;
 
 import org.junit.Test;
 

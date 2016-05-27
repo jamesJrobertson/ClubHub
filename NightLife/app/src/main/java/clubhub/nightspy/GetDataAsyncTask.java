@@ -1,18 +1,18 @@
-package clubhub.nightlife;
+package clubhub.nightspy;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.google.gdata.client.spreadsheet.*;
-import com.google.gdata.data.PlainTextConstruct;
-import com.google.gdata.data.spreadsheet.*;
-import com.google.gdata.util.*;
+import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.ListFeed;
+import com.google.gdata.data.spreadsheet.WorksheetEntry;
+import com.google.gdata.data.spreadsheet.WorksheetFeed;
+import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ServiceException;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 /**
  * Created by James R on 2016-05-12.
@@ -34,20 +34,22 @@ public class GetDataAsyncTask extends AsyncTask<Void, Void, ListFeed>
         SpreadsheetService service =
                 new SpreadsheetService("MySpreadsheetIntegration-v1");
         service.setProtocolVersion(SpreadsheetService.Versions.V3);
-        // TODO: Authorize the service object for a specific user (see other sections)
 
         // Define the URL to request.  This should never change.
+
+        // Real database
+        // URL SPREADSHEET_FEED_URL = new URL(
+        //        "https://spreadsheets.google.com/feeds/worksheets/12aVMIIXrZN86LJc2JS1jdJxCUczym3GcvH1-dxidw9g/public/full");
+
+        // Fake Database
         URL SPREADSHEET_FEED_URL = new URL(
-                "https://spreadsheets.google.com/feeds/worksheets/12aVMIIXrZN86LJc2JS1jdJxCUczym3GcvH1-dxidw9g/public/full");
+                "https://spreadsheets.google.com/feeds/worksheets/1TF8G6RgfFQQNkrdw05ZVxX7XMGx3h7sxxsaLfRGxzHE/public/full");
+
 
         WorksheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, WorksheetFeed.class);
         List<WorksheetEntry> worksheets = feed.getEntries();
-
         WorksheetEntry worksheet = worksheets.get(0);
-
-        Log.d("DATA", "Worksheet name " + worksheet.getTitle().getPlainText());
         URL listFeedUrl = new URL(worksheet.getListFeedUrl().toString());
-        Log.d("DATA", "URL is " + listFeedUrl.toString());
         listFeed = service.getFeed(listFeedUrl, ListFeed.class);
 
     }

@@ -1,14 +1,12 @@
-package clubhub.nightlife;
+package clubhub.nightspy;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,21 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.google.gdata.data.spreadsheet.ListEntry;
+import com.google.gdata.data.spreadsheet.ListFeed;
+
 import java.util.Vector;
-
-import com.google.gdata.client.authn.oauth.*;
-import com.google.gdata.client.spreadsheet.*;
-import com.google.gdata.data.*;
-import com.google.gdata.data.batch.*;
-import com.google.gdata.data.spreadsheet.*;
-import com.google.gdata.util.*;
-
-import java.io.IOException;
-import java.net.*;
-import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class ListClubs extends AppCompatActivity {
@@ -64,9 +51,9 @@ public class ListClubs extends AppCompatActivity {
         initializeDatabase();
         initializePage();
 
-}
-    private void initializePage(){
+    }
 
+    private void initializePage() {
 
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1); // The layout everything on ListClub goes into
@@ -80,7 +67,7 @@ public class ListClubs extends AppCompatActivity {
 
         // Set the overall background colour
         // TODO get a drawable or image as the background, single colour is boring
-        rl.setBackgroundColor(0xFF00FFFF);
+        rl.setBackgroundColor(0xFFFFFFFF);
 
         // Dummy variables to use for each club
         ProgressBar prog;
@@ -159,53 +146,48 @@ public class ListClubs extends AppCompatActivity {
             linlay.addView(linlay3);
             linlay.addView(prog);
             linlay.setId(Integer.parseInt(database.elementAt(i).elementAt(0)));
+            linlay.setPadding(0,20,0,20);
+            //linlay.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.boarder2));
             lls.add(linlay);
 
         }
 
-        for(int i = 0;i<lls.size();i++)
+        for (int i = 0; i < lls.size(); i++)
             ll.addView(lls.elementAt(i)); // Add all views to the ListClubs page
 
     }
 
     public void orderByName(View ve) {
-        // TODO When pressed multiple times
+        // Sort clubs alphabetically
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
         for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
         int placeHolder[] = new int[database.size()];
-        for(int i = 0; i < placeHolder.length; i++)
+        for (int i = 0; i < placeHolder.length; i++)
             placeHolder[i] = i;
 
         boolean flag = true;   // set flag to true to begin first pass
         int temp;   //holding variable
 
-        while ( flag )
-        {
-            flag= false;    //set flag to false awaiting a possible swap
-            for( int j = 0;  j < placeHolder.length -1;  j++ )
-            {
-//                a negative int if this < that
-//                0 if this == that
-//                a positive int if this > that
-//
-                if ( 0 > database.elementAt(placeHolder[j]).elementAt(1).compareToIgnoreCase(database.elementAt(placeHolder[j+1]).elementAt(1)))   // change to > for ascending sort
+        while (flag) {
+            flag = false;    //set flag to false awaiting a possible swap
+            for (int j = 0; j < placeHolder.length - 1; j++) {
+                if (0 > database.elementAt(placeHolder[j]).elementAt(1).compareToIgnoreCase(database.elementAt(placeHolder[j + 1]).elementAt(1)))   // change to > for ascending sort
                 {
-                    temp = placeHolder[ j ];                //swap elements
-                    placeHolder[ j ] = placeHolder[ j+1 ];
-                    placeHolder[ j+1 ] = temp;
+                    temp = placeHolder[j];                //swap elements
+                    placeHolder[j] = placeHolder[j + 1];
+                    placeHolder[j + 1] = temp;
                     flag = true;              //shows a swap occurred
                 }
             }
         }
-        if(1 == orderFlag){
+        if (1 == orderFlag) {
             orderFlag = 2;
             for (int i = 0; i < lls.size(); i++) {
                 ll.addView(lls.elementAt(placeHolder[i]));
             }
-        }
-        else {
+        } else {
             orderFlag = 1;
             for (int i = (lls.size() - 1); i >= 0; i--) {
                 ll.addView(lls.elementAt(placeHolder[i]));
@@ -216,47 +198,39 @@ public class ListClubs extends AppCompatActivity {
     }
 
     public void orderByBusy(View v) {
-        // TODO reorganize clubs by how busy they are (may need to wait for database to be done)
+        // Change the order of the clubs by how busy they are
 
-        // This is just dummy things to see if clicking works
+        // Remove all clubs
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
         for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
 
         int placeHolder[] = new int[database.size()];
-        for(int i = 0; i < placeHolder.length; i++)
+        for (int i = 0; i < placeHolder.length; i++)
             placeHolder[i] = i;
 
         boolean flag = true;   // set flag to true to begin first pass
         int temp;   //holding variable
 
-        while ( flag )
-        {
-            flag= false;    //set flag to false awaiting a possible swap
-            for( int j = 0;  j < placeHolder.length -1;  j++ )
-            {
-//                a negative int if this < that
-//                0 if this == that
-//                a positive int if this > that
-//
-                if (Integer.parseInt(database.elementAt(placeHolder[j]).elementAt(3)) < Integer.parseInt(database.elementAt(placeHolder[j+1]).elementAt(3)))   // change to > for ascending sort
-
+        while (flag) {
+            flag = false;    //set flag to false awaiting a possible swap
+            for (int j = 0; j < placeHolder.length - 1; j++) {
+                if (Integer.parseInt(database.elementAt(placeHolder[j]).elementAt(3)) < Integer.parseInt(database.elementAt(placeHolder[j + 1]).elementAt(3)))   // change to > for ascending sort
                 {
-                    temp = placeHolder[ j ];                //swap elements
-                    placeHolder[ j ] = placeHolder[ j+1 ];
-                    placeHolder[ j+1 ] = temp;
+                    temp = placeHolder[j];                //swap elements
+                    placeHolder[j] = placeHolder[j + 1];
+                    placeHolder[j + 1] = temp;
                     flag = true;              //shows a swap occurred
                 }
             }
         }
-        if(3 == orderFlag){
+        if (3 == orderFlag) {
             orderFlag = 4;
             for (int i = 0; i < lls.size(); i++) {
                 ll.addView(lls.elementAt(placeHolder[i]));
             }
-        }
-        else {
+        } else {
             orderFlag = 3;
             for (int i = (lls.size() - 1); i >= 0; i--) {
                 ll.addView(lls.elementAt(placeHolder[i]));
@@ -266,44 +240,37 @@ public class ListClubs extends AppCompatActivity {
     }
 
     public void orderByWaitTime(View v) {
-
+        // Sort clubs by wait time
         LinearLayout ll = (LinearLayout) findViewById(R.id.linear_layout1);
         for (int i = (lls.size() - 1); i >= 0; i--) {
             ll.removeView(findViewById(i));
         }
 
         int placeHolder[] = new int[database.size()];
-        for(int i = 0; i < placeHolder.length; i++)
+        for (int i = 0; i < placeHolder.length; i++)
             placeHolder[i] = i;
 
         boolean flag = true;   // set flag to true to begin first pass
         int temp;   //holding variable
 
-        while ( flag )
-        {
-            flag= false;    //set flag to false awaiting a possible swap
-            for( int j = 0;  j < placeHolder.length -1;  j++ )
-            {
-//                a negative int if this < that
-//                0 if this == that
-//                a positive int if this > that
-//
-                if (Integer.parseInt(database.elementAt(placeHolder[j]).elementAt(2)) < Integer.parseInt(database.elementAt(placeHolder[j+1]).elementAt(2)))   // change to > for ascending sort
+        while (flag) {
+            flag = false;    //set flag to false awaiting a possible swap
+            for (int j = 0; j < placeHolder.length - 1; j++) {
+                if (Integer.parseInt(database.elementAt(placeHolder[j]).elementAt(2)) < Integer.parseInt(database.elementAt(placeHolder[j + 1]).elementAt(2)))   // change to > for ascending sort
                 {
-                    temp = placeHolder[ j ];                //swap elements
-                    placeHolder[ j ] = placeHolder[ j+1 ];
-                    placeHolder[ j+1 ] = temp;
+                    temp = placeHolder[j];                //swap elements
+                    placeHolder[j] = placeHolder[j + 1];
+                    placeHolder[j + 1] = temp;
                     flag = true;              //shows a swap occurred
                 }
             }
         }
-        if(5 == orderFlag){
+        if (5 == orderFlag) {
             orderFlag = 6;
             for (int i = 0; i < lls.size(); i++) {
                 ll.addView(lls.elementAt(placeHolder[i]));
             }
-        }
-        else {
+        } else {
             orderFlag = 5;
             for (int i = (lls.size() - 1); i >= 0; i--) {
                 ll.addView(lls.elementAt(placeHolder[i]));
@@ -312,7 +279,7 @@ public class ListClubs extends AppCompatActivity {
 
     }
 
-    private void initializeDatabase (){
+    private void initializeDatabase() {
         database.clear();
         // Get the database
         ListFeed worksheets = null;
@@ -328,7 +295,7 @@ public class ListClubs extends AppCompatActivity {
         for (ListEntry row : worksheets.getEntries()) {
             Vector<String> data = new Vector<String>();
             for (String tag : row.getCustomElements().getTags()) {
-                if(row.getCustomElements().getValue(tag) == null)
+                if (row.getCustomElements().getValue(tag) == null)
                     data.add("NA"); // Checking to see if the cell has something in it
                 else
                     data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data

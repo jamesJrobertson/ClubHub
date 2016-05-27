@@ -1,16 +1,13 @@
-package clubhub.nightlife;
+package clubhub.nightspy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -18,13 +15,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by James R on 2016-04-20.
@@ -55,7 +46,7 @@ public class ClubPage extends AppCompatActivity {
 
         // Set the rating to the average rating of the club
         RatingBar r_Bar = (RatingBar) findViewById(R.id.ratingBar);
-        int ratingProgress = 4; // 1 = half a star // TODO get average rating from database and set ratingProgress to it
+        int ratingProgress = Integer.parseInt(data.get(12)); // 1 = half a star
         r_Bar.setProgress(ratingProgress);
 
         // Set the Image of the club from the url in the database
@@ -81,16 +72,22 @@ public class ClubPage extends AppCompatActivity {
         iv.setImageDrawable(drawTemp);
 
         // Set image of busy scale
-        // TODO Get better images and more precise ones, will need to redo scales accordingly
         iv = (ImageView) findViewById(R.id.imageViewBusy);
         int busyScale = Integer.parseInt(data.get(3));
-        if(25 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.busy_image0);
-        else if (25 <= busyScale && 75 > busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.busy_image50);
-        else if (75 <= busyScale)
-            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.busy_image100);
+        if(15 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity10);
+        else if (15 <= busyScale && 27 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity20);
+        else if (27 <= busyScale && 40 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity35);
+        else if (40 <= busyScale && 53 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity45);
+        else if (53 <= busyScale && 73 > busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity60);
+        else if (73 <= busyScale)
+            drawTemp = ContextCompat.getDrawable(getApplicationContext(),R.drawable.capacity85);
         iv.setImageDrawable(drawTemp);
+        
 
         // Set cover charge image
         // TODO Get better images and more precise ones, will need to redo scales accordingly
