@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email:\nclubhub.prez@gmail.com\n\nEmail:\njamesjrobertson42@gmail.com\n\nPhone:\n403-519-8813"
+            android:text="Email:\nclubhub.prez@gmail.com"
             android:textSize="20dp"
             android:layout_weight="1"
             android:id="@+id/textView" />

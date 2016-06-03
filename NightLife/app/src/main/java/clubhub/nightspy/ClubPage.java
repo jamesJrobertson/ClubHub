@@ -2,6 +2,7 @@ package clubhub.nightspy;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,7 +31,7 @@ public class ClubPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_club_page);
 
-        listenerForRatingBar(); // Acts on the changes of the rating bar
+        //listenerForRatingBar(); // Acts on the changes of the rating bar
 
         // Acquire the clubs information
         Intent intent = getIntent();
@@ -41,12 +42,14 @@ public class ClubPage extends AppCompatActivity {
         v.setText(data.get(1)); // Get the clubs name
         // Formatting of the clubs name
         v.setTextSize(50);
+        v.setTextColor(Color.WHITE);
 
+        /*
         // Set the rating to the average rating of the club
         RatingBar r_Bar = (RatingBar) findViewById(R.id.ratingBar);
         int ratingProgress = Integer.parseInt(data.get(12)); // 1 = half a star
         r_Bar.setProgress(ratingProgress);
-
+*/
         // Set the Image of the club from the url in the database
         ImageView iv = (ImageView) findViewById(R.id.imageClubView);
         if ("NA" != data.get(4))
@@ -79,11 +82,11 @@ public class ClubPage extends AppCompatActivity {
 
         // Set cover charge
         TextView coverText = (TextView) findViewById(R.id.textViewCover);
-        waitTimeText.setText("$" + data.get(5));
+        coverText.setText("$" + data.get(5));
 
-        // Get the layout of cober, busy, wait time images and change the background
+        // Get the layout of cover, busy, wait time images and change the background
         LinearLayout imageLay = (LinearLayout) findViewById(R.id.linear_layout_image_information);
-        //imageLay.setBackgroundColor(0xFFFF00FF);
+        //imageLay.setBackgroundColor(getResources(R.color.background));
 
         // Set the starting information to be displayed (What onCLickInformation does)
         setClubInformation();
@@ -129,7 +132,7 @@ public class ClubPage extends AppCompatActivity {
         startActivity(intent);
 
     }
-
+/*
     public void listenerForRatingBar() {
         RatingBar r_Bar = (RatingBar) findViewById(R.id.ratingBar);
 
@@ -141,5 +144,5 @@ public class ClubPage extends AppCompatActivity {
                     }
                 }
         );
-    }
+    }*/
 }

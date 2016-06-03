@@ -25,8 +25,8 @@
                     android:layout_height="200dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/test" />
-
-                <RatingBar
+                <!---
+                RatingBar
                     android:id="@+id/ratingBar"
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:layout_centerHorizontal="true"
@@ -34,8 +34,8 @@
                     android:layout_height="wrap_content"
                     android:numStars="5"
                     android:rating="3"
-                    android:stepSize="0.5" />
-
+                    android:stepSize="0.5"
+                   -->
                 <TextView
                     android:id="@+id/textClubsName"
                     android:layout_width="wrap_content"
@@ -50,7 +50,6 @@
                 android:id="@+id/linear_layout_image_information"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@color/colorPrimaryDark"
                 android:orientation="horizontal">
 
                 <LinearLayout

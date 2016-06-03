@@ -67,7 +67,7 @@ public class ListClubs extends AppCompatActivity {
 
         // Set the overall background colour
         // TODO get a drawable or image as the background, single colour is boring
-        rl.setBackgroundColor(0xFFFFFFFF);
+        //rl.setBackgroundColor(0xFFFFFFFF);
 
         // Dummy variables to use for each club
         ProgressBar prog;
@@ -146,7 +146,7 @@ public class ListClubs extends AppCompatActivity {
             linlay.addView(linlay3);
             linlay.addView(prog);
             linlay.setId(Integer.parseInt(database.elementAt(i).elementAt(0)));
-            linlay.setPadding(0,20,0,20);
+            linlay.setPadding(0, 20, 0, 20);
             //linlay.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.boarder2));
             lls.add(linlay);
 
