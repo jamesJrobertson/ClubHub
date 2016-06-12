@@ -1,22 +1,27 @@
 package clubhub.nightspy;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gdata.data.spreadsheet.ListEntry;
 import com.google.gdata.data.spreadsheet.ListFeed;
 
+import java.util.Calendar;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
@@ -135,16 +140,79 @@ public class ListClubs extends AppCompatActivity {
             txt5.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             linlay3.addView(txt5);
 
+///////////////////////////////////////////////////////////////////
+
+            RelativeLayout rel = new RelativeLayout(this);
+            rel.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+
             // Progress bar to be added
             prog = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
             prog.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             prog.setProgressDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.progress_colour));
-            prog.setProgress(Integer.parseInt(database.elementAt(i).elementAt(3)));
+            rel.addView(prog);
+
+            TextView openClosedState = new TextView(this);
+            openClosedState.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            openClosedState.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+
+            if(database.elementAt(i).elementAt(14) != "NA") {
+
+                Calendar c = Calendar.getInstance();
+                int day_of_week = c.get(Calendar.DAY_OF_WEEK);
+                int hour_of_day = c.get(Calendar.HOUR_OF_DAY);
+                if (0 > (hour_of_day - 2)) {
+                    day_of_week--;
+                    if (0 == day_of_week)
+                        day_of_week = 7;
+                }
+                String hours_of_operation[] = database.elementAt(i).elementAt(14).split(";");
+                String hours[] = hours_of_operation[(day_of_week-1)].split("-");
+                int time1[] = {(Integer.parseInt(hours[1].split(":")[0])), Integer.parseInt(hours[1].split(":")[1])};
+                int time2[] = {(Integer.parseInt(hours[2].split(":")[0])+24), Integer.parseInt(hours[2].split(":")[1])};
+
+
+                if(time1[0] <= hour_of_day && hour_of_day <= time2[0]){
+                    if("NA" == database.elementAt(i).elementAt(3)) {
+                        openClosedState.setText("Open");
+                        prog.setProgress(0);
+                        openClosedState.setTextColor(Color.GREEN);
+                    }
+                    else
+                        prog.setProgress(Integer.parseInt(database.elementAt(i).elementAt(3)));
+                }
+                else {
+                    openClosedState.setText("Closed");
+                    prog.setProgress(0);
+                    openClosedState.setTextColor(Color.RED);
+                }
+
+
+
+
+
+            }
+            else {
+                if("NA" != database.elementAt(i).elementAt(3))
+                    prog.setProgress(Integer.parseInt(database.elementAt(i).elementAt(3)));
+                else{
+                    openClosedState.setText("No Data");
+                    prog.setProgress(0);
+                    openClosedState.setTextColor(Color.YELLOW);
+                }
+
+            }
+            rel.addView(openClosedState);
+
+
+
+////////////////////////////////////////////////////////////////////
+
 
             // add all to the overall layout
             linlay.addView(linlay2);
             linlay.addView(linlay3);
-            linlay.addView(prog);
+            linlay.addView(rel);
             linlay.setId(Integer.parseInt(database.elementAt(i).elementAt(0)));
             linlay.setPadding(0, 20, 0, 20);
             //linlay.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.boarder2));
@@ -292,16 +360,27 @@ public class ListClubs extends AppCompatActivity {
         }
 
         // Fill database from google sheets
-        for (ListEntry row : worksheets.getEntries()) {
-            Vector<String> data = new Vector<String>();
-            for (String tag : row.getCustomElements().getTags()) {
-                if (row.getCustomElements().getValue(tag) == null)
-                    data.add("NA"); // Checking to see if the cell has something in it
-                else
-                    data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+        if(null != worksheets) {
+            for (ListEntry row : worksheets.getEntries()) {
+                Vector<String> data = new Vector<String>();
+                for (String tag : row.getCustomElements().getTags()) {
+                    if (row.getCustomElements().getValue(tag) == null)
+                        data.add("NA"); // Checking to see if the cell has something in it
+                    else
+                        data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+                }
+                database.add(data); // Add the clubs information to the data list
             }
-            database.add(data); // Add the clubs information to the data list
         }
+        else{
+            Context context = getApplicationContext();
+            CharSequence text = "Cannot Connect";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
+
 
     }
 

@@ -22,11 +22,14 @@ public class Promotions extends AppCompatActivity {
         Intent intent = getIntent();
         data = intent.getExtras().getStringArrayList("ClubInformation");
 
-        String text = " ";
-        TextView promoText = (TextView) findViewById(R.id.textViewPromotions);
-        for(int i = 0; i < data.size(); i += 2){
-            text = text + "\n" + data.get(i) + "\n" + data.get(i+1);
+        if(!data.isEmpty()) {
+            String text = data.get(0) + "\n" + data.get(1) + "\n";
+            for (int i = 2; i < data.size(); i += 2) {
+                text = text + "\n" + data.get(i) + "\n" + data.get(i + 1) + "\n";
+            }
+            TextView promoText = (TextView) findViewById(R.id.textViewPromotions);
+            promoText.setText(text);
         }
-        promoText.setText(text);
+
     }
 }

@@ -15,8 +15,8 @@ android {
         applicationId "clubhub.nightspy"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.11"
+        versionCode 7
+        versionName "1.12"
     }
     buildTypes {
         release {

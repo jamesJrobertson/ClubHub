@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +65,14 @@ public class ClubPage extends AppCompatActivity {
 
         // Set image of capacity scale
         iv = (ImageView) findViewById(R.id.imageViewBusy);
-        int busyScale = Integer.parseInt(data.get(3));
+        int busyScale = 100;
+
+        // TODO Need to do something when no busy information is given
+        if(!data.get(3).contains("NA"))
+            busyScale = Integer.parseInt(data.get(3));
+        else
+            busyScale = 0;
+
         if (15 > busyScale)
             drawTemp = ContextCompat.getDrawable(getApplicationContext(), R.drawable.capacity10);
         else if (15 <= busyScale && 27 > busyScale)
@@ -120,10 +128,11 @@ public class ClubPage extends AppCompatActivity {
     public void onClickGuestList(View V) {
         // On click set the view to display guest list data
         TextView d = (TextView) findViewById(R.id.textDisplyBox);
-        if (data.get(11).equals("Y")) //TODO This will probably need to be redone to specific clubs
-            temp = "Show this at the door before 11:00pm to get in for free";
-        else
-            temp = "NA";
+//        if (data.get(11).equals("Y")) //TODO This will probably need to be redone to specific clubs
+//            temp = "Show this at the door before 11:00pm to get in for free";
+//        else
+//
+       temp = data.get(11);
         // d.setText(temp);
 
 

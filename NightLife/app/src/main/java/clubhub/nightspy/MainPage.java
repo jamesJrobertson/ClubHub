@@ -1,9 +1,11 @@
 package clubhub.nightspy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gdata.data.spreadsheet.ListEntry;
 import com.google.gdata.data.spreadsheet.ListFeed;
@@ -41,8 +43,10 @@ public class MainPage extends AppCompatActivity {
     }
     private void initializePromoList(){
         for(int i = 0; i < database.size(); i++){
-            promoList.add(database.elementAt(i).elementAt(1));
-            promoList.add(database.elementAt(i).elementAt(9));
+            if("NA" != database.elementAt(i).elementAt(9)) {
+                promoList.add(database.elementAt(i).elementAt(1));
+                promoList.add(database.elementAt(i).elementAt(9));
+            }
         }
     }
     private void initializeDatabase() {
@@ -58,16 +62,27 @@ public class MainPage extends AppCompatActivity {
         }
 
         // Fill database from google sheets
-        for (ListEntry row : worksheets.getEntries()) {
-            Vector<String> data = new Vector<String>();
-            for (String tag : row.getCustomElements().getTags()) {
-                if (row.getCustomElements().getValue(tag) == null)
-                    data.add("NA"); // Checking to see if the cell has something in it
-                else
-                    data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+
+        if(null != worksheets) {
+            for (ListEntry row : worksheets.getEntries()) {
+                Vector<String> data = new Vector<String>();
+                for (String tag : row.getCustomElements().getTags()) {
+                    if (row.getCustomElements().getValue(tag) == null)
+                        data.add("NA"); // Checking to see if the cell has something in it
+                    else
+                        data.add(row.getCustomElements().getValue(tag)); // Add the information to the clubs data
+                }
+                database.add(data); // Add the clubs information to the data list
             }
-            database.add(data); // Add the clubs information to the data list
         }
+        else{
+            Context context = getApplicationContext();
+            CharSequence text = "Cannot Connect";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
 
     }
 }
