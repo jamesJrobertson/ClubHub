@@ -1,5 +1,6 @@
 package clubhub.nightspy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -128,18 +130,20 @@ public class ClubPage extends AppCompatActivity {
     public void onClickGuestList(View V) {
         // On click set the view to display guest list data
         TextView d = (TextView) findViewById(R.id.textDisplyBox);
-//        if (data.get(11).equals("Y")) //TODO This will probably need to be redone to specific clubs
-//            temp = "Show this at the door before 11:00pm to get in for free";
-//        else
-//
-       temp = data.get(11);
-        // d.setText(temp);
+        temp = data.get(11);
 
-
-        Intent intent = new Intent("android.intent.action.GuestList"); // Change to the clubs page
-        intent.putExtra("GuestList", temp); // pass the id to the new page
-        startActivity(intent);
-
+        if(temp.contains("NA")) {
+            Context context = getApplicationContext();
+            CharSequence text = "No Guest List";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+        else {
+            Intent intent = new Intent("android.intent.action.GuestList"); // Change to the clubs page
+            intent.putExtra("GuestList", temp); // pass the id to the new page
+            startActivity(intent);
+        }
     }
 /*
     public void listenerForRatingBar() {

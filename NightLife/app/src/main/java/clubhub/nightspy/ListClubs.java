@@ -156,58 +156,45 @@ public class ListClubs extends AppCompatActivity {
             openClosedState.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             openClosedState.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 
-            if(database.elementAt(i).elementAt(14) != "NA") {
-
-                Calendar c = Calendar.getInstance();
-                int day_of_week = c.get(Calendar.DAY_OF_WEEK);
-                int hour_of_day = c.get(Calendar.HOUR_OF_DAY);
-                if (0 > (hour_of_day - 2)) {
-                    day_of_week--;
-                    if (0 == day_of_week)
-                        day_of_week = 7;
-                }
+            // If club has hours of operation in database
+            if (!database.elementAt(i).elementAt(14).contains("NA")) {
                 String hours_of_operation[] = database.elementAt(i).elementAt(14).split(";");
-                String hours[] = hours_of_operation[(day_of_week-1)].split("-");
-                int time1[] = {(Integer.parseInt(hours[1].split(":")[0])), Integer.parseInt(hours[1].split(":")[1])};
-                int time2[] = {(Integer.parseInt(hours[2].split(":")[0])+24), Integer.parseInt(hours[2].split(":")[1])};
 
-
-                if(time1[0] <= hour_of_day && hour_of_day <= time2[0]){
-                    if("NA" == database.elementAt(i).elementAt(3)) {
+                // if the club is open
+                if (isClubOpen(hours_of_operation)) {
+                    // if capacity is not available
+                    if (database.elementAt(i).elementAt(3).contains("NA")) {
                         openClosedState.setText("Open");
                         prog.setProgress(0);
                         openClosedState.setTextColor(Color.GREEN);
                     }
+                    // if capacity is available
                     else
                         prog.setProgress(Integer.parseInt(database.elementAt(i).elementAt(3)));
                 }
+                // If club is closed
                 else {
                     openClosedState.setText("Closed");
                     prog.setProgress(0);
                     openClosedState.setTextColor(Color.RED);
                 }
-
-
-
-
-
             }
+            // If club has no hours in database
             else {
-                if("NA" != database.elementAt(i).elementAt(3))
+                // and club has capacity in database
+                if ("NA" != database.elementAt(i).elementAt(3))
                     prog.setProgress(Integer.parseInt(database.elementAt(i).elementAt(3)));
-                else{
+                // if club has minimal information in database
+                else {
                     openClosedState.setText("No Data");
                     prog.setProgress(0);
                     openClosedState.setTextColor(Color.YELLOW);
                 }
-
             }
+
             rel.addView(openClosedState);
 
-
-
 ////////////////////////////////////////////////////////////////////
-
 
             // add all to the overall layout
             linlay.addView(linlay2);
@@ -222,6 +209,53 @@ public class ListClubs extends AppCompatActivity {
 
         for (int i = 0; i < lls.size(); i++)
             ll.addView(lls.elementAt(i)); // Add all views to the ListClubs page
+
+    }
+
+    public boolean isClubOpen(String hours_of_operation[]) {
+        Calendar c = Calendar.getInstance();
+        int day_of_week = c.get(Calendar.DAY_OF_WEEK);
+        int hour_of_day = c.get(Calendar.HOUR_OF_DAY);
+        int minute_of_hour = c.get(Calendar.MINUTE);
+
+        int previousDay = day_of_week-1;
+        if(1 > previousDay)
+            previousDay = 7;
+
+
+        String hours[] = hours_of_operation[(day_of_week - 1)].split("-");
+        String hours2[] = hours_of_operation[(previousDay - 1)].split("-");
+
+        int time1[] = {(Integer.parseInt(hours[1].split(":")[0])), Integer.parseInt(hours[1].split(":")[1])};
+        int time2[] = {(Integer.parseInt(hours[2].split(":")[0])), Integer.parseInt(hours[2].split(":")[1])};
+
+        if(time2[0] < time1[0])
+            time2[0] += 24;
+
+        int time3[] = {(Integer.parseInt(hours2[1].split(":")[0])), Integer.parseInt(hours2[1].split(":")[1])};
+        int time4[] = {(Integer.parseInt(hours2[2].split(":")[0])), Integer.parseInt(hours2[2].split(":")[1])};
+
+        boolean previousDayState = false;
+
+        if(time4[0] < time3[0])
+            previousDayState = true;
+
+        if (time1[0] <= hour_of_day && hour_of_day <= time2[0]){
+            boolean skipState = false;
+            if(hour_of_day == time1[0] && time1[1] > minute_of_hour)
+                skipState = true;
+            else if(hour_of_day == time2[0] && time2[1] < minute_of_hour)
+                skipState = true;
+            else if(!skipState)
+                return true;
+        }
+        if (previousDayState == true && hour_of_day <= time4[0]){
+
+            if(hour_of_day == time4[0] && time4[1] < minute_of_hour)
+                return false;
+            return true;
+        }
+        return false;
 
     }
 
@@ -360,7 +394,7 @@ public class ListClubs extends AppCompatActivity {
         }
 
         // Fill database from google sheets
-        if(null != worksheets) {
+        if (null != worksheets) {
             for (ListEntry row : worksheets.getEntries()) {
                 Vector<String> data = new Vector<String>();
                 for (String tag : row.getCustomElements().getTags()) {
@@ -371,15 +405,13 @@ public class ListClubs extends AppCompatActivity {
                 }
                 database.add(data); // Add the clubs information to the data list
             }
-        }
-        else{
+        } else {
             Context context = getApplicationContext();
             CharSequence text = "Cannot Connect";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
-
 
 
     }

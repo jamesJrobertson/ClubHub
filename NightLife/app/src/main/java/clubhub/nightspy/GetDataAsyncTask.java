@@ -17,10 +17,10 @@ import java.util.List;
 /**
  * Created by James R on 2016-05-12.
  */
-public class GetDataAsyncTask extends AsyncTask<Void, Void, ListFeed>
-{
+public class GetDataAsyncTask extends AsyncTask<Void, Void, ListFeed> {
     ListFeed listFeed;
-    protected ListFeed doInBackground(Void... params){
+
+    protected ListFeed doInBackground(Void... params) {
         try {
             getData();
         } catch (IOException e) {
@@ -30,6 +30,7 @@ public class GetDataAsyncTask extends AsyncTask<Void, Void, ListFeed>
         }
         return listFeed;
     }
+
     private void getData() throws AuthenticationException, MalformedURLException, IOException, ServiceException {
         SpreadsheetService service =
                 new SpreadsheetService("MySpreadsheetIntegration-v1");
@@ -37,14 +38,18 @@ public class GetDataAsyncTask extends AsyncTask<Void, Void, ListFeed>
 
         // Define the URL to request.  This should never change.
 
-        // Real database
-       // URL SPREADSHEET_FEED_URL = new URL(
-         //       "https://spreadsheets.google.com/feeds/worksheets/12aVMIIXrZN86LJc2JS1jdJxCUczym3GcvH1-dxidw9g/public/full");
+        boolean useFakeDatabase = false;
+        URL SPREADSHEET_FEED_URL = null;
 
-        // Fake Database
-        URL SPREADSHEET_FEED_URL = new URL(
-                "https://spreadsheets.google.com/feeds/worksheets/1TF8G6RgfFQQNkrdw05ZVxX7XMGx3h7sxxsaLfRGxzHE/public/full");
+        if (useFakeDatabase == false) {
+            // Real database
+            SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/12aVMIIXrZN86LJc2JS1jdJxCUczym3GcvH1-dxidw9g/public/full");
+        }
 
+        if (useFakeDatabase == true) {
+            // Fake Database
+            SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/1TF8G6RgfFQQNkrdw05ZVxX7XMGx3h7sxxsaLfRGxzHE/public/full");
+        }
 
         WorksheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, WorksheetFeed.class);
         List<WorksheetEntry> worksheets = feed.getEntries();
